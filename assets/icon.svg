@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-labelledby="title">
+  <title id="title">Universal LLM Prompt Anonymizer</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#070b16"/>
+      <stop offset="0.55" stop-color="#0d1426"/>
+      <stop offset="1" stop-color="#1b1233"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#22d3ee"/>
+      <stop offset="0.55" stop-color="#818cf8"/>
+      <stop offset="1" stop-color="#e879f9"/>
+    </linearGradient>
+    <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="34" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1024" height="1024" rx="220" fill="url(#bg)"/>
+  <circle cx="820" cy="180" r="300" fill="#7c3aed" opacity="0.16"/>
+  <circle cx="180" cy="880" r="260" fill="#06b6d4" opacity="0.12"/>
+
+  <g filter="url(#glow)">
+    <path d="M512 230 L740 305 V510 C740 650 650 740 512 790 C374 740 284 650 284 510 V305 Z" fill="url(#accent)"/>
+  </g>
+  <path d="M512 292 L684 348 V510 C684 622 616 696 512 738 C408 696 340 622 340 510 V348 Z" fill="#0b1020"/>
+
+  <rect x="462" y="505" width="100" height="84" rx="16" fill="url(#accent)"/>
+  <path d="M485 505 V468 A27 27 0 0 1 539 468 V505" fill="none" stroke="url(#accent)" stroke-width="18" stroke-linecap="round"/>
+  <circle cx="512" cy="541" r="10" fill="#0b1020"/>
+  <path d="M512 548 V566" stroke="#0b1020" stroke-width="10" stroke-linecap="round"/>
+</svg>

@@ -99,8 +99,10 @@ export class Anonymizer {
     const cached = this.textCache.get(key);
     if (cached !== undefined) return cached;
 
-    const regexSpans = detectRegex(text);
+    const detectors = this.config.detectors ?? {};
+    const regexSpans = detectRegex(text, detectors);
     if (
+      detectors.username !== false &&
       this.username &&
       this.username.length >= 3 &&
       !COMMON_USERNAMES.has(this.username.toLowerCase())
@@ -109,7 +111,7 @@ export class Anonymizer {
     }
 
     let nameSpans = [];
-    if (this.config.ner?.enabled !== false) {
+    if (this.config.ner?.enabled !== false && detectors.names !== false) {
       const words = await detectNames(text, this.config.ner ?? {});
       if (words.length) nameSpans = findWordSpans(text, words, "PERSON");
     }

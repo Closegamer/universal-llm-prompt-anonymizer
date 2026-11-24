@@ -12,10 +12,27 @@ export const DEFAULT_ROUTES = Object.freeze({
   "/xai": "https://api.x.ai",
 });
 
+export const DETECTORS = Object.freeze({
+  names: true,
+  nickname: true,
+  date: true,
+  username: true,
+  email: true,
+  phone: true,
+  address: true,
+  card: true,
+  iban: true,
+  ssn: true,
+  id: true,
+  number: true,
+  ip: true,
+});
+
 export const DEFAULTS = Object.freeze({
   host: "127.0.0.1",
   port: 8787,
   routes: DEFAULT_ROUTES,
+  detectors: DETECTORS,
   ner: {
     enabled: true,
     latinThreshold: 0.75,
@@ -51,6 +68,7 @@ export function loadConfig(file) {
       ...DEFAULTS,
       ...user,
       routes,
+      detectors: { ...DETECTORS, ...(user.detectors ?? {}) },
       ner: { ...DEFAULTS.ner, ...(user.ner ?? {}) },
     },
   };

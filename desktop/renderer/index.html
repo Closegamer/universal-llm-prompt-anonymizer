@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; script-src 'self'"
+    >
+    <title>Universal LLM Prompt Anonymizer</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <div class="brand">
+          <div class="logo" aria-hidden="true">
+            <svg viewBox="0 0 64 64">
+              <defs>
+                <linearGradient id="shield" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0" stop-color="#67e8f9"/>
+                  <stop offset="0.55" stop-color="#818cf8"/>
+                  <stop offset="1" stop-color="#e879f9"/>
+                </linearGradient>
+              </defs>
+              <path d="M32 4 L56 13 V32 C56 47 45 56 32 60 C19 56 8 47 8 32 V13 Z" fill="url(#shield)"/>
+              <path d="M32 10 L50 17 V32 C50 43 42 50 32 54 C22 50 14 43 14 32 V17 Z" fill="#0b1020"/>
+              <rect x="25" y="31" width="14" height="12" rx="2.5" fill="url(#shield)"/>
+              <path d="M28 31 V27 A4 4 0 0 1 36 27 V31" fill="none" stroke="url(#shield)" stroke-width="3"/>
+              <circle cx="32" cy="36" r="1.5" fill="#0b1020"/>
+              <path d="M32 37 V40" stroke="#0b1020" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <h1>Universal LLM Prompt Anonymizer</h1>
+            <p>Keep personal data out of cloud prompts.</p>
+          </div>
+        </div>
+        <div class="status" id="status" data-status="starting" role="status">
+          <span class="dot" aria-hidden="true"></span>
+          <span id="status-text">Starting...</span>
+        </div>
+      </header>
+
+      <section class="card endpoint">
+        <div>
+          <span class="label">Proxy endpoint</span>
+          <code id="proxy-url">http://127.0.0.1:8787</code>
+        </div>
+        <div class="endpoint-actions">
+          <button class="ghost" id="copy" type="button">Copy</button>
+          <button class="ghost" id="log" type="button">Open log</button>
+        </div>
+      </section>
+
+      <div class="error" id="error" role="alert" hidden></div>
+
+      <section class="card">
+        <div class="section-head">
+          <div>
+            <h2>What to hide</h2>
+            <p class="hint">Uncheck anything you want the model to see unchanged.</p>
+          </div>
+          <button class="ghost small" id="all" type="button">Toggle all</button>
+        </div>
+        <div class="grid">
+          <label class="check">
+            <input type="checkbox" data-detector="names">
+            <span><strong>Names and surnames</strong><small>Local NER, English and Russian</small></span>
+          </label>
+          <label class="check">
+            <input type="checkbox" data-detector="nickname">
+            <span><strong>Nicknames</strong><small>Labeled or quoted nicknames</small></span>
+          </label>
+          <label class="check">
+            <input type="checkbox" data-detector="date">
+            <span><strong>Dates of birth</strong><small>Dates next to birth labels</small></span>
+          </label>
+          <label class="check">
+            <input type="checkbox" data-detector="username">
+            <span><strong>Usernames and home paths</strong><small>C:\Users\name, /home/name</small></span>
+          </label>
+          <label class="check">
+            <input type="checkbox" data-detector="email">
+            <span><strong>Email addresses</strong><small>Full address</small></span>
+          </label>
+          <label class="check">
+            <input type="checkbox" data-detector="phone">
+            <span><strong>Phone numbers</strong><small>International, US and Russian formats</small></span>
+          </label>
+          <label class="check">
+            <input type="checkbox" data-detector="address">
+            <span><strong>Street addresses</strong><small>English and Russian patterns</small></span>
+          </label>
+          <label class="check">
+            <input type="checkbox" data-detector="card">
+            <span><strong>Payment cards</strong><small>Luhn validated</small></span>
+          </label>
+          <label class="check">
+            <input type="checkbox" data-detector="iban">
+            <span><strong>IBANs</strong><small>Mod 97 validated</small></span>
+          </label>
+          <label class="check">
+            <input type="checkbox" data-detector="ssn">
+            <span><strong>US SSNs</strong><small>123-45-6789 format</small></span>
+          </label>
+          <label class="check">
+            <input type="checkbox" data-detector="id">
+            <span><strong>Account and passport IDs</strong><small>Labeled numbers</small></span>
+          </label>
+          <label class="check">
+            <input type="checkbox" data-detector="number">
+            <span><strong>Long numbers</strong><small>9 or more digits</small></span>
+          </label>
+          <label class="check">
+            <input type="checkbox" data-detector="ip">
+            <span><strong>IP addresses</strong><small>IPv4</small></span>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Behavior</h2>
+        <p class="hint">Applies to this app and to every client that uses the proxy.</p>
+        <div class="grid">
+          <label class="check">
+            <input type="checkbox" data-option="startAtLogin" id="startAtLogin">
+            <span><strong>Start at login</strong><small>Open in the tray when you sign in</small></span>
+          </label>
+          <label class="check">
+            <input type="checkbox" data-option="preload" id="preload">
+            <span><strong>Preload name models</strong><small>Slower start, faster first prompt</small></span>
+          </label>
+          <label class="check">
+            <input type="checkbox" data-option="log" id="log">
+            <span><strong>Write request log</strong><small>Method, path, status and token count only</small></span>
+          </label>
+          <label class="check danger">
+            <input type="checkbox" data-option="allowUnscanned" id="allowUnscanned">
+            <span><strong>Allow unscanned non-JSON bodies</strong><small>Warning: those bodies are not anonymized</small></span>
+          </label>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Advanced</h2>
+        <label class="field" for="port">
+          <span>Port</span>
+          <input id="port" type="number" min="1024" max="65535" step="1">
+        </label>
+        <p class="hint">The proxy listens on 127.0.0.1 only. Restart after changing the port.</p>
+      </section>
+
+      <footer class="actions">
+        <button class="primary" id="save" type="button">Save and restart</button>
+        <button class="secondary" id="toggle" type="button">Stop proxy</button>
+        <span class="saved" id="saved" aria-live="polite"></span>
+      </footer>
+
+      <footer class="meta">
+        <span>v<span id="version">0.1.0</span></span>
+        <a href="https://github.com/Closegamer/universal-llm-prompt-anonymizer" target="_blank" rel="noreferrer">GitHub</a>
+        <span>writtenBy('Closegamer', 2026)</span>
+      </footer>
+    </main>
+    <script src="renderer.js"></script>
+  </body>
+</html>

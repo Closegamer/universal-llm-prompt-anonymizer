@@ -51,6 +51,30 @@ test("invalid card numbers are not cards", () => {
   assert.ok(!types("Number 4111 1111 1111 1112").some((x) => x.startsWith("CARD:")));
 });
 
+test("detector switches can disable categories", () => {
+  const allOff = {
+    email: false,
+    phone: false,
+    address: false,
+    card: false,
+    iban: false,
+    ssn: false,
+    id: false,
+    number: false,
+    ip: false,
+    date: false,
+    nickname: false,
+    username: false,
+  };
+  assert.deepEqual(
+    detectRegex("Email john@example.com. DOB 12.03.1985. C:\\Users\\avgrigorev", allOff),
+    [],
+  );
+  assert.deepEqual(detectRegex("Email john@example.com", { email: false }), []);
+  assert.deepEqual(detectRegex("DOB 12.03.1985", { date: false }), []);
+  assert.deepEqual(detectRegex("C:\\Users\\avgrigorev", { username: false }), []);
+});
+
 test("anonymizer replaces repeated values with one token", async () => {
   const anonymizer = new Anonymizer({ ner: { enabled: false }, salt: "beef" });
   const text = "Write to john@example.com. Again: john@example.com.";

@@ -120,44 +120,57 @@ function addGroup(re, type, group, text, out, validate) {
   }
 }
 
-export function detectRegex(text) {
+export function detectRegex(text, detectors = {}) {
   const out = [];
+  const on = (name) => detectors[name] !== false;
 
-  addMatches(EMAIL, "EMAIL", text, out);
-  addMatches(CARD, "CARD", text, out, (v) => {
-    const d = v.replace(/\D/g, "");
-    return d.length >= 13 && d.length <= 19 && luhn(d);
-  });
-  addMatches(IBAN, "IBAN", text, out, validIban);
-  addMatches(SSN, "SSN", text, out);
-  addMatches(PHONE_INTL, "PHONE", text, out, validPhone);
-  addMatches(PHONE_RU, "PHONE", text, out, validPhone);
-  addMatches(PHONE_US, "PHONE", text, out, validPhone);
-  addMatches(PHONE_PLAIN, "PHONE", text, out, validPhone);
-  addGroup(PHONE_LABEL, "PHONE", 1, text, out, validPhone);
-  addMatches(IPV4, "IP", text, out, validIpv4);
-  addMatches(ADDRESS_EN, "ADDRESS", text, out);
-  addMatches(ADDRESS_RU, "ADDRESS", text, out);
-  addGroup(HOME_PATH, "USERNAME", 1, text, out);
+  if (on("email")) addMatches(EMAIL, "EMAIL", text, out);
+  if (on("card")) {
+    addMatches(CARD, "CARD", text, out, (v) => {
+      const d = v.replace(/\D/g, "");
+      return d.length >= 13 && d.length <= 19 && luhn(d);
+    });
+  }
+  if (on("iban")) addMatches(IBAN, "IBAN", text, out, validIban);
+  if (on("ssn")) addMatches(SSN, "SSN", text, out);
+  if (on("phone")) {
+    addMatches(PHONE_INTL, "PHONE", text, out, validPhone);
+    addMatches(PHONE_RU, "PHONE", text, out, validPhone);
+    addMatches(PHONE_US, "PHONE", text, out, validPhone);
+    addMatches(PHONE_PLAIN, "PHONE", text, out, validPhone);
+    addGroup(PHONE_LABEL, "PHONE", 1, text, out, validPhone);
+  }
+  if (on("ip")) addMatches(IPV4, "IP", text, out, validIpv4);
+  if (on("address")) {
+    addMatches(ADDRESS_EN, "ADDRESS", text, out);
+    addMatches(ADDRESS_RU, "ADDRESS", text, out);
+  }
+  if (on("username")) addGroup(HOME_PATH, "USERNAME", 1, text, out);
 
-  addMatches(DATE, "DATE", text, out, (value, start) => {
-    const from = Math.max(0, start - 50);
-    const to = Math.min(text.length, start + value.length + 50);
-    return BIRTH_LABEL.test(text.slice(from, to));
-  });
-  addMatches(YEAR_ONLY, "DATE", text, out, (value, start) => {
-    const from = Math.max(0, start - 25);
-    const to = Math.min(text.length, start + value.length + 25);
-    return BIRTH_LABEL.test(text.slice(from, to));
-  });
+  if (on("date")) {
+    addMatches(DATE, "DATE", text, out, (value, start) => {
+      const from = Math.max(0, start - 50);
+      const to = Math.min(text.length, start + value.length + 50);
+      return BIRTH_LABEL.test(text.slice(from, to));
+    });
+    addMatches(YEAR_ONLY, "DATE", text, out, (value, start) => {
+      const from = Math.max(0, start - 25);
+      const to = Math.min(text.length, start + value.length + 25);
+      return BIRTH_LABEL.test(text.slice(from, to));
+    });
+  }
 
-  addGroup(NICKNAME, "NICKNAME", 1, text, out);
-  addGroup(NICKNAME, "NICKNAME", 2, text, out);
-  addGroup(ID_LABEL, "ID", 1, text, out, (v) => {
-    const n = digitCount(v);
-    return n >= 5 && n <= 25;
-  });
-  addMatches(LONG_NUMBER, "ID", text, out);
+  if (on("nickname")) {
+    addGroup(NICKNAME, "NICKNAME", 1, text, out);
+    addGroup(NICKNAME, "NICKNAME", 2, text, out);
+  }
+  if (on("id")) {
+    addGroup(ID_LABEL, "ID", 1, text, out, (v) => {
+      const n = digitCount(v);
+      return n >= 5 && n <= 25;
+    });
+  }
+  if (on("number")) addMatches(LONG_NUMBER, "ID", text, out);
 
   return dedupe(out);
 }

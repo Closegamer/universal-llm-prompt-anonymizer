@@ -1,0 +1,80 @@
+{
+  "name": "universal-llm-prompt-anonymizer-desktop",
+  "productName": "Universal LLM Prompt Anonymizer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Desktop tray app for Universal LLM Prompt Anonymizer",
+  "author": "Closegamer",
+  "license": "MIT",
+  "main": "main.js",
+  "devDependencies": {
+    "electron": "45.5.0"
+  },
+  "build": {
+    "appId": "com.closegamer.universalllmpromptanonymizer",
+    "productName": "Universal LLM Prompt Anonymizer",
+    "copyright": "Copyright © 2026 Closegamer",
+    "artifactName": "universal-llm-prompt-anonymizer-${version}-${os}-${arch}.${ext}",
+    "compression": "normal",
+    "npmRebuild": false,
+    "directories": {
+      "output": "../release",
+      "buildResources": "build"
+    },
+    "files": [
+      "main.js",
+      "preload.cjs",
+      "renderer/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "build",
+        "to": "proxy"
+      },
+      {
+        "from": "assets",
+        "to": "assets"
+      }
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "assets/icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Universal LLM Prompt Anonymizer"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": "assets/icon.png",
+      "category": "public.app-category.utilities",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "icon": "assets/icon.png",
+      "category": "Utility",
+      "maintainer": "Closegamer <closegamer@mail.ru>",
+      "synopsis": "Local privacy gateway for cloud LLMs"
+    }
+  }
+}

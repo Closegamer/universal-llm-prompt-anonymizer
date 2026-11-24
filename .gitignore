@@ -1,5 +1,9 @@
 node_modules/
 .cache/
+build/
+desktop/build/
+desktop/assets/
+release/
 *.log
 anonymizer.config.json
 *.bak

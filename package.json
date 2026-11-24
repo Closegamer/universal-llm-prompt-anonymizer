@@ -48,6 +48,13 @@
     "start": "node src/cli.js",
     "serve": "node src/cli.js serve",
     "install-opencode": "node src/cli.js install",
+    "desktop": "node desktop/prepare-runtime.js && electron desktop/main.js",
+    "icons": "node desktop/make-icons.js",
+    "prepare:desktop": "node desktop/prepare-runtime.js",
+    "dist": "node desktop/prepare-runtime.js && electron-builder --projectDir desktop",
+    "dist:win": "node desktop/prepare-runtime.js && electron-builder --projectDir desktop --win",
+    "dist:mac": "node desktop/prepare-runtime.js && electron-builder --projectDir desktop --mac",
+    "dist:linux": "node desktop/prepare-runtime.js && electron-builder --projectDir desktop --linux",
     "test": "node --test",
     "prepublishOnly": "npm test"
   },
@@ -57,5 +64,10 @@
   },
   "engines": {
     "node": ">=22.15"
+  },
+  "devDependencies": {
+    "electron": "^45.5.0",
+    "electron-builder": "^26.18.0",
+    "sharp": "^0.35.5"
   }
 }

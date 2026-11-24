@@ -2,7 +2,39 @@
 
 One guide for Windows, macOS and Linux. The product name is Universal LLM Prompt Anonymizer. The command is `prompt-anonymizer`.
 
-Requirements: Node.js 22.15 or newer, npm, and git for the GitHub install. OpenCode is optional.
+## Desktop app
+
+The easiest option is the desktop app. It does not need Node.js, npm or git.
+
+Download the installer from [Releases](https://github.com/Closegamer/universal-llm-prompt-anonymizer/releases/latest):
+
+| OS | File |
+| --- | --- |
+| Windows x64 | `universal-llm-prompt-anonymizer-*-win-x64.exe` |
+| macOS Apple Silicon | `universal-llm-prompt-anonymizer-*-mac-arm64.dmg` |
+| Linux x64 | `.AppImage` or `.deb` |
+
+Run the installer and start the app. It lives in the system tray and starts the proxy on `127.0.0.1:8787`.
+
+Open the settings window from the tray:
+
+- **What to hide:** names, nicknames, dates of birth, usernames, emails, phones, addresses, cards, IBANs, SSNs, account IDs, long numbers and IP addresses.
+- **Behavior:** start at login, preload name models, write a request log, allow unscanned non-JSON bodies.
+- **Advanced:** proxy port.
+
+If you want dates to pass through, uncheck **Dates of birth** and press **Save and restart**. The same checkboxes control the proxy used by OpenCode.
+
+The installers are not code signed. On Windows, choose **More info** then **Run anyway** if SmartScreen appears. On macOS, right-click the app and choose **Open**, or run:
+
+```bash
+xattr -dr com.apple.quarantine "/Applications/Universal LLM Prompt Anonymizer.app"
+```
+
+## Command line and OpenCode
+
+Use this path if you want the CLI, the OpenCode plugin, or a custom integration. Do not run it on the same port as the desktop app.
+
+Requirements: Node.js 22.15 or newer, npm, and git for the GitHub install.
 
 ## 1. Check Node.js
 
