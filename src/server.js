@@ -93,7 +93,7 @@ async function handle(req, res, config, anonymizer) {
   if (pathname === "/health") {
     const body = JSON.stringify({
       ok: true,
-      service: "prompt-anonymizer",
+      service: "universal-llm-prompt-anonymizer",
       ner: config.ner.enabled !== false,
       tokens: anonymizer.vault.size,
     });
@@ -104,7 +104,9 @@ async function handle(req, res, config, anonymizer) {
 
   if (pathname === "/") {
     const body = [
-      "prompt-anonymizer",
+      "Universal LLM Prompt Anonymizer",
+      "Local privacy gateway for cloud LLMs",
+      "Command: prompt-anonymizer",
       "",
       "Point a client at one of these prefixes:",
       ...Object.entries(config.routes).map(([prefix, upstream]) => `  ${prefix}  ->  ${upstream}`),

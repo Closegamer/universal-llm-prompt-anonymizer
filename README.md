@@ -1,48 +1,49 @@
-# prompt-anonymizer
+<p align="center">
+  <img src="assets/banner.svg" alt="Universal LLM Prompt Anonymizer" width="100%">
+</p>
 
-[English](README.md) | [Русский](README.ru.md)
+<h1 align="center">Universal LLM Prompt Anonymizer</h1>
 
-Local PII anonymizing gateway for cloud LLMs, with an OpenCode plugin. Point any OpenAI-compatible or Anthropic-compatible client at it. Personal data is replaced with stable tokens before the request leaves your machine, and the real values are put back into the streamed response before the client stores or displays it.
+<p align="center">
+  <b>Keep personal data out of cloud prompts.</b><br>
+  A local proxy and OpenCode plugin that replaces names, emails, phones and other PII with stable tokens, then restores the real values in the response.
+</p>
+
+<p align="center">
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-22c55e?style=flat-square" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/node-%3E%3D22.15-339933?style=flat-square" alt="Node.js 22.15+">
+  <img src="https://img.shields.io/badge/providers-OpenAI%20%7C%20Anthropic%20%7C%20DeepSeek%20%7C%20Gemini-6366f1?style=flat-square" alt="Supported providers">
+  <img src="https://img.shields.io/badge/data-stays%20local-06b6d4?style=flat-square" alt="Data stays local">
+</p>
+
+<p align="center">
+  <a href="README.md">English</a> ·
+  <a href="README.ru.md">Русский</a> ·
+  <a href="INSTALL.md">Install guide</a> ·
+  <a href="INSTALL.ru.md">Инструкция</a>
+</p>
 
 ```
-You:    My name is Sarah Connor, email sarah@example.com.
-Cloud:  My name is [[PERSON_a812_1]], email [[EMAIL_a812_1]].
-You see: My name is Sarah Connor, email sarah@example.com.
+You:      My name is Sarah Connor, email sarah@example.com.
+Cloud:    My name is [[PERSON_a812_1]], email [[EMAIL_a812_1]].
+You see:  My name is Sarah Connor, email sarah@example.com.
 ```
 
-## Why
+## Quick start
 
-Cloud LLM providers receive everything you send them: names, emails, phones, dates of birth, account numbers, file paths and tool output. This proxy keeps that data local. The model still does the work, but it sees placeholders instead of real values.
-
-The token map lives only in the proxy's memory on your machine. It is not written to disk and is not sent to the provider.
-
-## Install
-
-Full step-by-step guide for Windows, macOS and Linux: [INSTALL.md](INSTALL.md).
-
-### OpenCode (recommended)
+### OpenCode
 
 ```bash
-npm install -g github:Closegamer/prompt-anonymizer
+npm install -g github:Closegamer/universal-llm-prompt-anonymizer
 prompt-anonymizer install
 ```
 
-The `install` command adds the plugin to `~/.config/opencode/opencode.json`, keeps a backup of the previous file, and starts nothing yet. OpenCode reloads plugins automatically. Start a new session and the plugin will start the proxy and route supported providers through it.
-
-Supported providers: OpenAI, Anthropic, DeepSeek, Google Gemini, OpenRouter, Groq, Mistral and xAI. Local providers such as Ollama are left alone.
-
-To use a custom port or a custom config path:
-
-```bash
-prompt-anonymizer install --config "C:/path/to/opencode.json"
-```
+Start a new OpenCode session. The plugin starts the proxy and routes supported providers through it. Local providers such as Ollama are left alone.
 
 ### Any other client
 
-Install and start the proxy:
-
 ```bash
-npm install -g github:Closegamer/prompt-anonymizer
+npm install -g github:Closegamer/universal-llm-prompt-anonymizer
 prompt-anonymizer
 ```
 
@@ -65,42 +66,37 @@ Claude Code example:
 ANTHROPIC_BASE_URL=http://127.0.0.1:8787/anthropic claude
 ```
 
-The client keeps using its own API key. The proxy forwards the authentication headers and never stores them.
+The client keeps using its own API key. The proxy forwards authentication headers and never stores them.
 
-### From source
+Full cross-platform guide for Windows, macOS and Linux: [INSTALL.md](INSTALL.md).
 
-```bash
-git clone https://github.com/Closegamer/prompt-anonymizer.git
-cd prompt-anonymizer
-npm install
-npm start
-```
+## Why
 
-For OpenCode from source:
+Cloud LLM providers receive everything you send them: names, emails, phones, dates of birth, account numbers, file paths and tool output. This proxy keeps that data local. The model still does the work, but it sees placeholders instead of real values.
 
-```bash
-npm run install-opencode
-```
+The token map lives only in the proxy's memory on your machine. It is not written to disk and is not sent to the provider.
 
-## What gets replaced
+## Features
 
-- Emails.
-- Phones, including international, US and Russian formats.
-- Payment cards, validated with Luhn.
-- IBANs, validated with mod 97.
-- US SSNs.
-- IP addresses.
-- Dates near birth labels such as `born`, `DOB`, `date of birth`, `родился`, `дата рождения`.
-- Nicknames in labeled or quoted form.
-- Account, passport and other labeled identifiers.
-- Long numeric identifiers, 9 or more digits.
-- Street addresses in English and Russian patterns.
-- Names and surnames through local NER models, including Russian and English text.
-- The OS username and home paths such as `C:\Users\name`, `/home/name` and `/Users/name`.
-
-Every value gets a stable token such as `[[PERSON_a812_1]]`. The same value gets the same token for the lifetime of the proxy process. The model is instructed to reproduce tokens exactly.
+- Local NER for names and surnames in English and Russian.
+- Structured detection for emails, phones, cards, IBANs, SSNs, IP addresses, dates, nicknames, IDs and addresses.
+- OS username and home path detection, including `C:\Users\name`, `/home/name` and `/Users/name`.
+- Streaming-safe restoration, including tokens split across SSE events and tool call arguments.
+- Works with any OpenAI-compatible or Anthropic-compatible client.
+- OpenCode plugin with automatic proxy startup and provider rewiring.
+- No PII at rest. The vault is memory only.
+- Bilingual documentation: English and Russian.
 
 ## How it works
+
+```mermaid
+flowchart LR
+    U[Your client] -->|real prompt| P[Local anonymizer]
+    P -->|tokens only| C[Cloud LLM]
+    C -->|tokens| P
+    P -->|real values| U
+    P <--> V[(In-memory vault)]
+```
 
 1. The proxy parses the outgoing JSON request and walks every string value: system prompt, message history, tool inputs, tool outputs and attached text.
 2. Detectors replace PII with tokens and store the real values in an in-memory vault.
@@ -108,6 +104,22 @@ Every value gets a stable token such as `[[PERSON_a812_1]]`. The same value gets
 4. The upstream response is restored before it reaches the client, including streamed SSE events and tool call arguments.
 5. Tokens split across stream chunks are buffered and restored correctly.
 6. Local providers are skipped by default.
+
+## What gets replaced
+
+| Category | Examples |
+| --- | --- |
+| Contact data | Emails, phones in international, US and Russian formats |
+| Financial data | Payment cards with Luhn validation, IBANs with mod 97 validation |
+| Government IDs | US SSNs, labeled passport and account numbers |
+| Network data | IP addresses |
+| Dates | Dates near birth labels such as `born`, `DOB`, `date of birth`, `родился`, `дата рождения` |
+| Names | Names and surnames through local NER, nicknames in labeled or quoted form |
+| Numbers | Long numeric identifiers, 9 or more digits |
+| Addresses | English and Russian street address patterns |
+| Environment | OS username and home directory paths |
+
+Every value gets a stable token such as `[[PERSON_a812_1]]`. The same value gets the same token for the lifetime of the proxy process.
 
 ## Configuration
 

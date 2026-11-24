@@ -1,23 +1,25 @@
 {
-  "name": "prompt-anonymizer",
+  "name": "universal-llm-prompt-anonymizer",
   "version": "0.1.0",
-  "description": "Local PII anonymizing gateway for cloud LLMs, with an OpenCode plugin. Локальный шлюз анонимизации персональных данных для облачных LLM.",
+  "description": "Universal LLM Prompt Anonymizer: local PII gateway for cloud LLMs, with an OpenCode plugin. Универсальный анонимизатор промптов LLM: локальный шлюз анонимизации персональных данных.",
   "type": "module",
   "license": "MIT",
   "author": "Closegamer",
-  "homepage": "https://github.com/Closegamer/prompt-anonymizer#readme",
+  "homepage": "https://github.com/Closegamer/universal-llm-prompt-anonymizer#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Closegamer/prompt-anonymizer.git"
+    "url": "git+https://github.com/Closegamer/universal-llm-prompt-anonymizer.git"
   },
   "bugs": {
-    "url": "https://github.com/Closegamer/prompt-anonymizer/issues"
+    "url": "https://github.com/Closegamer/universal-llm-prompt-anonymizer/issues"
   },
   "keywords": [
     "pii",
     "privacy",
     "anonymization",
     "llm",
+    "universal",
+    "prompt-anonymizer",
     "opencode",
     "opencode-plugin",
     "ner",
@@ -34,6 +36,7 @@
   "files": [
     "index.js",
     "src",
+    "assets",
     "README.md",
     "README.ru.md",
     "INSTALL.md",

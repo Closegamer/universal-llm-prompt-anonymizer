@@ -1,6 +1,6 @@
-# Install and start
+# Install Universal LLM Prompt Anonymizer
 
-One guide for Windows, macOS and Linux.
+One guide for Windows, macOS and Linux. The product name is Universal LLM Prompt Anonymizer. The command is `prompt-anonymizer`.
 
 Requirements: Node.js 22.15 or newer, npm, and git for the GitHub install. OpenCode is optional.
 
@@ -28,14 +28,14 @@ Get Node from [nodejs.org](https://nodejs.org/) if you prefer the installer.
 This command is the same on Windows, macOS and Linux:
 
 ```bash
-npm install -g github:Closegamer/prompt-anonymizer
+npm install -g github:Closegamer/universal-llm-prompt-anonymizer
 prompt-anonymizer --version
 ```
 
 If git is not available, use the tarball instead:
 
 ```bash
-npm install -g https://github.com/Closegamer/prompt-anonymizer/archive/refs/heads/main.tar.gz
+npm install -g https://github.com/Closegamer/universal-llm-prompt-anonymizer/archive/refs/heads/main.tar.gz
 ```
 
 ## 3. Choose how to use it
@@ -112,7 +112,7 @@ curl http://127.0.0.1:8787/health
 Invoke-WebRequest -UseBasicParsing http://127.0.0.1:8787/health
 ```
 
-You should see JSON with `"service":"prompt-anonymizer"` and `"ok":true`.
+You should see JSON with `"service":"universal-llm-prompt-anonymizer"` and `"ok":true`.
 
 Then send a normal prompt through the client. A first request that contains a name can pause while the local NER weights download. Later requests are fast.
 
@@ -127,7 +127,7 @@ prompt-anonymizer stop
 Update:
 
 ```bash
-npm install -g github:Closegamer/prompt-anonymizer
+npm install -g github:Closegamer/universal-llm-prompt-anonymizer
 prompt-anonymizer stop
 ```
 
@@ -137,7 +137,7 @@ Uninstall:
 
 ```bash
 prompt-anonymizer stop
-npm uninstall -g prompt-anonymizer
+npm uninstall -g universal-llm-prompt-anonymizer
 ```
 
 Then remove the plugin path from `~/.config/opencode/opencode.json`. The backup file created by the installer is next to it.

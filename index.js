@@ -40,7 +40,7 @@ async function isProxy(port) {
       signal: AbortSignal.timeout(1000),
     });
     const body = await response.json();
-    return body?.service === "prompt-anonymizer";
+    return body?.service === "universal-llm-prompt-anonymizer";
   } catch {
     return false;
   }
@@ -100,7 +100,7 @@ export function proxyBaseURL(provider, port) {
 }
 
 export default Plugin.define({
-  id: "prompt-anonymizer",
+  id: "universal-llm-prompt-anonymizer",
   async setup(ctx) {
     const port = Number(ctx.options?.port ?? DEFAULT_PORT);
     const only = Array.isArray(ctx.options?.providers) ? new Set(ctx.options.providers) : null;

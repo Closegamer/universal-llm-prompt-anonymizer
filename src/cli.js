@@ -29,8 +29,9 @@ function parseArgs(argv) {
 }
 
 function printHelp() {
-  console.log(`prompt-anonymizer ${pkg.version}
-Local PII anonymizing gateway for cloud LLMs.
+  console.log(`Universal LLM Prompt Anonymizer ${pkg.version}
+Local privacy gateway for cloud LLMs.
+Command: prompt-anonymizer
 
 Usage:
   prompt-anonymizer                      Start the proxy
@@ -83,7 +84,11 @@ async function serve(flags) {
   const healthHost = config.host === "0.0.0.0" ? "127.0.0.1" : config.host;
   writePid({ pid: process.pid, port, url: `http://${healthHost}:${port}` });
 
-  console.log(`prompt-anonymizer listening on ${url}`);
+  console.log("");
+  console.log("Universal LLM Prompt Anonymizer");
+  console.log("Local privacy gateway for cloud LLMs");
+  console.log("");
+  console.log(`listening on ${url}`);
   console.log(`config: ${path ?? "defaults"}`);
   console.log("routes:");
   for (const [prefix, upstream] of Object.entries(config.routes)) {
@@ -119,7 +124,7 @@ async function stop() {
   let healthy = false;
   try {
     const response = await fetch(`${url}/health`, { signal: AbortSignal.timeout(1000) });
-    healthy = (await response.json())?.service === "prompt-anonymizer";
+    healthy = (await response.json())?.service === "universal-llm-prompt-anonymizer";
   } catch {
     healthy = false;
   }

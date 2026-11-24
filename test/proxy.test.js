@@ -154,6 +154,23 @@ test("proxy refuses to forward a non-JSON body", async () => {
   }
 });
 
+test("health identifies the product for the OpenCode plugin", async () => {
+  const upstream = await listen(async (req, res) => {
+    await readAll(req);
+    res.end("{}");
+  });
+  const proxy = await startProxy(upstream.port);
+  try {
+    const response = await fetch(`http://127.0.0.1:${proxy.port}/health`);
+    const body = await response.json();
+    assert.equal(body.ok, true);
+    assert.equal(body.service, "universal-llm-prompt-anonymizer");
+  } finally {
+    await close(proxy.server);
+    await close(upstream.server);
+  }
+});
+
 test("proxy leaves a request without PII untouched", async () => {
   let seen;
   const upstream = await listen(async (req, res) => {
