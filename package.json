@@ -1,6 +1,6 @@
 {
   "name": "universal-llm-prompt-anonymizer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Universal LLM Prompt Anonymizer: local PII gateway for cloud LLMs, with an OpenCode plugin. Универсальный анонимизатор промптов LLM: локальный шлюз анонимизации персональных данных.",
   "type": "module",
   "license": "MIT",
@@ -59,8 +59,7 @@
     "prepublishOnly": "npm test"
   },
   "dependencies": {
-    "@huggingface/transformers": "^4.3.2",
-    "@opencode/plugin": "2.2.0"
+    "@huggingface/transformers": "^4.3.2"
   },
   "engines": {
     "node": ">=22.15"

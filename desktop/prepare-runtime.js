@@ -22,6 +22,7 @@ fs.cpSync(path.join(ROOT, "assets"), ASSETS, { recursive: true });
 fs.rmSync(RUNTIME, { recursive: true, force: true });
 fs.mkdirSync(RUNTIME, { recursive: true });
 fs.cpSync(path.join(ROOT, "src"), path.join(RUNTIME, "src"), { recursive: true });
+fs.copyFileSync(path.join(ROOT, "index.js"), path.join(RUNTIME, "index.js"));
 fs.writeFileSync(
   path.join(RUNTIME, "package.json"),
   `${JSON.stringify(
@@ -67,6 +68,8 @@ if (fs.existsSync(onnxBin)) {
 }
 fs.rmSync(path.join(runtimeModules, "onnxruntime-web"), { recursive: true, force: true });
 fs.rmSync(path.join(runtimeModules, "@img", "sharp-wasm32"), { recursive: true, force: true });
+
+fs.copyFileSync(path.join(DESKTOP, "installer.nsh"), path.join(BUILD, "installer.nsh"));
 
 fs.rmSync(NODE_DIR, { recursive: true, force: true });
 fs.mkdirSync(NODE_DIR, { recursive: true });

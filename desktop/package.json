@@ -1,7 +1,7 @@
 {
   "name": "universal-llm-prompt-anonymizer-desktop",
   "productName": "Universal LLM Prompt Anonymizer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "private": true,
   "type": "module",
   "description": "Desktop tray app for Universal LLM Prompt Anonymizer",
@@ -61,7 +61,8 @@
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Universal LLM Prompt Anonymizer"
+      "shortcutName": "Universal LLM Prompt Anonymizer",
+      "include": "installer.nsh"
     },
     "mac": {
       "target": [

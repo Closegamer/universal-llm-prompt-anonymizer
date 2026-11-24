@@ -4,6 +4,7 @@ build/
 desktop/build/
 desktop/assets/
 release/
+release-test/
 *.log
 anonymizer.config.json
 *.bak

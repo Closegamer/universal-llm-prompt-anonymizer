@@ -9,6 +9,7 @@ import { app, BrowserWindow, Menu, Tray, ipcMain, nativeImage, shell } from "ele
 const PRODUCT = "Universal LLM Prompt Anonymizer";
 const SERVICE = "universal-llm-prompt-anonymizer";
 const APP_ID = "com.closegamer.universalllmpromptanonymizer";
+const OPENCODE_PLUGIN = "universal-llm-prompt-anonymizer";
 const DIR = path.dirname(fileURLToPath(import.meta.url));
 const PRELOAD = path.join(DIR, "preload.cjs");
 const RENDERER = path.join(DIR, "renderer", "index.html");
@@ -126,6 +127,47 @@ function nodeBinary() {
     );
   }
   return process.env.PROMPT_ANONYMIZER_NODE ?? "node";
+}
+
+function opencodeConfigDir() {
+  const base = process.env.XDG_CONFIG_HOME || path.join(os.homedir(), ".config");
+  return path.join(base, "opencode");
+}
+
+function writeIfChanged(file, content) {
+  const next = Buffer.isBuffer(content) ? content : Buffer.from(content);
+  try {
+    if (fs.readFileSync(file).equals(next)) return;
+  } catch {
+    // Missing file, write it below.
+  }
+  fs.writeFileSync(file, next);
+}
+
+function ensureOpenCodePlugin() {
+  const configDir = opencodeConfigDir();
+  if (!fs.existsSync(configDir)) return;
+
+  const source = path.join(proxyRuntimeDir(), "index.js");
+  if (!fs.existsSync(source)) return;
+
+  const pluginDir = path.join(configDir, "plugins", OPENCODE_PLUGIN);
+  fs.mkdirSync(pluginDir, { recursive: true });
+  writeIfChanged(
+    path.join(pluginDir, "package.json"),
+    `${JSON.stringify(
+      {
+        name: OPENCODE_PLUGIN,
+        version: app.getVersion(),
+        private: true,
+        type: "module",
+        exports: "./index.js",
+      },
+      null,
+      2,
+    )}\n`,
+  );
+  writeIfChanged(path.join(pluginDir, "index.js"), fs.readFileSync(source));
 }
 
 async function health() {
@@ -456,6 +498,13 @@ async function init() {
   createWindow();
   applyLogin(settings.startAtLogin);
   await startProxy();
+  if (status === "running") {
+    try {
+      ensureOpenCodePlugin();
+    } catch (error) {
+      appendLog(`opencode plugin: ${error.message}`);
+    }
+  }
 }
 
 if (!app.requestSingleInstanceLock()) {
