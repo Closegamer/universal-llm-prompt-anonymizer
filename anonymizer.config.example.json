@@ -1,0 +1,14 @@
+{
+  "port": 8787,
+  "routes": {
+    "/corp": "https://llm.corp.example/v1"
+  },
+  "ner": {
+    "enabled": true,
+    "latinThreshold": 0.75,
+    "cyrillicThreshold": 0.6
+  },
+  "skipUpstreamHosts": ["localhost", "127.0.0.1", "::1", "[::1]"],
+  "allowUnscanned": false,
+  "log": true
+}

@@ -1,0 +1,58 @@
+{
+  "name": "prompt-anonymizer",
+  "version": "0.1.0",
+  "description": "Local PII anonymizing gateway for cloud LLMs, with an OpenCode plugin. Локальный шлюз анонимизации персональных данных для облачных LLM.",
+  "type": "module",
+  "license": "MIT",
+  "author": "Closegamer",
+  "homepage": "https://github.com/Closegamer/prompt-anonymizer#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Closegamer/prompt-anonymizer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Closegamer/prompt-anonymizer/issues"
+  },
+  "keywords": [
+    "pii",
+    "privacy",
+    "anonymization",
+    "llm",
+    "opencode",
+    "opencode-plugin",
+    "ner",
+    "proxy",
+    "russian",
+    "bilingual"
+  ],
+  "bin": {
+    "prompt-anonymizer": "./src/cli.js"
+  },
+  "exports": {
+    ".": "./index.js"
+  },
+  "files": [
+    "index.js",
+    "src",
+    "README.md",
+    "README.ru.md",
+    "INSTALL.md",
+    "INSTALL.ru.md",
+    "LICENSE",
+    "anonymizer.config.example.json"
+  ],
+  "scripts": {
+    "start": "node src/cli.js",
+    "serve": "node src/cli.js serve",
+    "install-opencode": "node src/cli.js install",
+    "test": "node --test",
+    "prepublishOnly": "npm test"
+  },
+  "dependencies": {
+    "@huggingface/transformers": "^4.3.2",
+    "@opencode/plugin": "2.2.0"
+  },
+  "engines": {
+    "node": ">=22.15"
+  }
+}
