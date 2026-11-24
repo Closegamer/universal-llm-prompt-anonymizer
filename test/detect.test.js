@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import os from "node:os";
 import test from "node:test";
-import { Anonymizer, Vault } from "../src/anonymizer.js";
+import { Anonymizer, COMMON_USERNAMES, Vault } from "../src/anonymizer.js";
 import { detectRegex } from "../src/regex.js";
 import { injectInstruction } from "../src/instructions.js";
 
@@ -87,7 +87,7 @@ test("anonymizer replaces repeated values with one token", async () => {
 
 test("anonymizer replaces the OS username outside paths too", async () => {
   const username = os.userInfo().username;
-  if (username.length < 3) return;
+  if (username.length < 3 || COMMON_USERNAMES.has(username.toLowerCase())) return;
   const anonymizer = new Anonymizer({ ner: { enabled: false }, salt: "d00d" });
   const out = await anonymizer.anonymizeText(`Account owner: ${username} wrote this.`);
   assert.equal(out, "Account owner: [[USERNAME_d00d_1]] wrote this.");

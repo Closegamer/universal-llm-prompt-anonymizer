@@ -4,7 +4,7 @@ import { detectNames } from "./ner.js";
 import { dedupe, detectRegex, findWordSpans } from "./regex.js";
 import { collectStrings, setAtPath } from "./jsonwalk.js";
 
-const COMMON_USERNAMES = new Set([
+export const COMMON_USERNAMES = new Set([
   "admin",
   "user",
   "root",
