@@ -7,6 +7,12 @@
   "description": "Desktop tray app for Universal LLM Prompt Anonymizer",
   "author": "Closegamer",
   "license": "MIT",
+  "homepage": "https://github.com/Closegamer/universal-llm-prompt-anonymizer#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Closegamer/universal-llm-prompt-anonymizer.git"
+  },
+  "desktopName": "universal-llm-prompt-anonymizer",
   "main": "main.js",
   "devDependencies": {
     "electron": "45.5.0"
@@ -74,7 +80,8 @@
       "icon": "assets/icon.png",
       "category": "Utility",
       "maintainer": "Closegamer <closegamer@mail.ru>",
-      "synopsis": "Local privacy gateway for cloud LLMs"
+      "synopsis": "Local privacy gateway for cloud LLMs",
+      "syncDesktopName": true
     }
   }
 }
