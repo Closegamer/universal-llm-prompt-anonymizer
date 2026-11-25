@@ -49,6 +49,13 @@ body {
   gap: 18px;
 }
 
+.hero-side {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 0 0 auto;
+}
+
 .brand {
   display: flex;
   align-items: center;
@@ -94,6 +101,29 @@ h1 {
   font-size: 12px;
   font-weight: 600;
   white-space: nowrap;
+}
+
+.language {
+  padding: 7px 10px;
+  color: var(--muted);
+  background: #0b1020;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.language:hover,
+.language:focus-visible {
+  color: var(--text);
+  border-color: #334155;
+}
+
+.language:focus-visible {
+  outline: 2px solid var(--violet);
+  outline-offset: 2px;
 }
 
 .dot {
@@ -196,6 +226,16 @@ h2 {
 @media (max-width: 680px) {
   .grid {
     grid-template-columns: 1fr;
+  }
+
+  .hero {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .hero-side {
+    width: 100%;
+    justify-content: space-between;
   }
 }
 
@@ -380,6 +420,13 @@ input[type="number"]:focus {
   margin-left: auto;
   color: var(--green);
   font-size: 12px;
+}
+
+.disclaimer {
+  margin: 16px 0 0;
+  color: #64748b;
+  font-size: 11px;
+  text-align: center;
 }
 
 .meta {

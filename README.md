@@ -103,7 +103,7 @@ The token map lives only in the proxy's memory on your machine. It is not writte
 - Desktop tray app with per-category checkboxes and start at login.
 - OpenCode plugin with automatic proxy startup and provider rewiring.
 - No PII at rest. The vault is memory only.
-- Bilingual documentation: English and Russian.
+- English and Russian interface with a language switcher, plus bilingual documentation.
 
 ## Desktop app
 
@@ -113,7 +113,9 @@ The desktop build runs the same local proxy and stays in the system tray. Open t
 - **Behavior:** start at login, preload the name models, write a request log, allow unscanned non-JSON bodies.
 - **Advanced:** proxy port.
 
-Changes restart the proxy. The OpenCode plugin reuses the running proxy, so the desktop settings also apply to OpenCode.
+The language switcher in the header changes the settings window and tray menu immediately. It does not restart the proxy.
+
+Changes to other settings restart the proxy. The OpenCode plugin reuses the running proxy, so the desktop settings also apply to OpenCode.
 
 The app stores its settings in the Electron user data directory and the proxy log next to them. Use **Open log** in the app to inspect startup errors.
 
@@ -223,6 +225,10 @@ npm run dist:linux   # AppImage and deb, run on Linux
 The desktop build copies the current Node.js binary and the proxy runtime into the app. Use Node.js 22.15 or newer. GitHub Actions builds Windows, macOS Apple Silicon and Linux installers on every `v*` tag.
 
 Requirements: Node.js 22.15 or newer.
+
+## Disclaimer
+
+This project is a best-effort privacy tool, not a guarantee. The plugin, the proxy and the desktop app may fail, crash or miss personal data. You use this software entirely at your own risk. The author accepts no responsibility or liability for any personal data leak, data loss or other damage caused by its use.
 
 ## License
 
@@ -337,7 +343,7 @@ ANTHROPIC_BASE_URL=http://127.0.0.1:8787/anthropic claude
 - Приложение в трее с галочками для каждой категории и автозапуском.
 - Плагин OpenCode с автоматическим запуском прокси и перенаправлением провайдеров.
 - Никаких персональных данных на диске. Хранилище живёт только в памяти.
-- Документация на английском и русском.
+- Интерфейс на английском и русском с переключателем языка и двуязычная документация.
 
 ## Приложение для рабочего стола
 
@@ -347,7 +353,9 @@ ANTHROPIC_BASE_URL=http://127.0.0.1:8787/anthropic claude
 - **Поведение:** автозапуск при входе, предзагрузка моделей имён, запись лога запросов, пропуск не-JSON тел без проверки.
 - **Дополнительно:** порт прокси.
 
-После сохранения прокси перезапускается. Плагин OpenCode использует уже запущенный прокси, поэтому настройки приложения действуют и в OpenCode.
+Переключатель языка в шапке сразу меняет язык окна настроек и меню в трее. Прокси при этом не перезапускается.
+
+После сохранения остальных настроек прокси перезапускается. Плагин OpenCode использует уже запущенный прокси, поэтому настройки приложения действуют и в OpenCode.
 
 Настройки хранятся в каталоге данных Electron, лог прокси лежит рядом. Кнопка **Open log** открывает его для диагностики.
 

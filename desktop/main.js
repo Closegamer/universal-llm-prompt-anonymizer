@@ -5,6 +5,7 @@ import os from "node:os";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { app, BrowserWindow, Menu, Tray, ipcMain, nativeImage, shell } from "electron";
+import { MESSAGES, normalizeLanguage, translate } from "./i18n.js";
 
 const PRODUCT = "Universal LLM Prompt Anonymizer";
 const SERVICE = "universal-llm-prompt-anonymizer";
@@ -35,6 +36,7 @@ const DETECTOR_KEYS = [
 
 const DEFAULT_SETTINGS = {
   port: 8787,
+  language: "en",
   startAtLogin: false,
   preload: false,
   log: false,
@@ -48,7 +50,7 @@ let proxyConfigPath = "";
 let logPath = "";
 let child = null;
 let status = "stopped";
-let lastError = "";
+let lastError = null;
 let stopping = false;
 let quitting = false;
 let win = null;
@@ -76,6 +78,7 @@ function loadSettings() {
   if (!Number.isInteger(settings.port) || settings.port < 1024 || settings.port > 65535) {
     settings.port = 8787;
   }
+  settings.language = normalizeLanguage(settings.language);
   saveSettings();
 }
 
@@ -186,7 +189,7 @@ async function startProxy() {
   if (child) return;
   if (await health()) {
     status = "error";
-    lastError = `A proxy is already running on port ${settings.port}. Stop it with "prompt-anonymizer stop" or change the port.`;
+    lastError = { key: "error.portBusy", values: { port: settings.port } };
     broadcast();
     return;
   }
@@ -195,14 +198,14 @@ async function startProxy() {
   const cli = path.join(runtime, "src", "cli.js");
   if (!fs.existsSync(cli)) {
     status = "error";
-    lastError = "Proxy runtime is missing. Run npm run prepare:desktop before starting the app.";
+    lastError = { key: "error.runtimeMissing" };
     broadcast();
     return;
   }
 
   writeProxyConfig();
   status = "starting";
-  lastError = "";
+  lastError = null;
   broadcast();
 
   const args = [];
@@ -223,7 +226,7 @@ async function startProxy() {
     });
   } catch (error) {
     status = "error";
-    lastError = `Could not start the proxy: ${error.message}`;
+    lastError = { key: "error.startFailed", values: { message: error.message } };
     broadcast();
     return;
   }
@@ -232,7 +235,7 @@ async function startProxy() {
   child.stderr.on("data", (data) => appendLog(data.toString()));
   child.on("error", (error) => {
     appendLog(`spawn error: ${error.message}`);
-    lastError = `Could not start the proxy: ${error.message}`;
+    lastError = { key: "error.startFailed", values: { message: error.message } };
   });
   child.on("exit", (code, signal) => {
     child = null;
@@ -240,11 +243,11 @@ async function startProxy() {
       stopping = false;
       if (status !== "error") {
         status = "stopped";
-        lastError = "";
+        lastError = null;
       }
     } else {
       status = "error";
-      lastError = `Proxy stopped unexpectedly (${signal ?? code}). Open the log for details.`;
+      lastError = { key: "error.stoppedUnexpectedly", values: { reason: signal ?? code } };
       appendLog(`proxy exited: ${signal ?? code}`);
     }
     broadcast();
@@ -254,7 +257,7 @@ async function startProxy() {
     if (!child) break;
     if (await health()) {
       status = "running";
-      lastError = "";
+      lastError = null;
       broadcast();
       return;
     }
@@ -263,7 +266,7 @@ async function startProxy() {
 
   if (status === "starting") {
     status = "error";
-    lastError = `Proxy did not start on port ${settings.port}. The port may be busy. Open the log for details.`;
+    lastError = { key: "error.didNotStart", values: { port: settings.port } };
     stopping = true;
     if (child) child.kill();
     broadcast();
@@ -273,7 +276,7 @@ async function startProxy() {
 async function stopProxy() {
   if (!child) {
     status = "stopped";
-    lastError = "";
+    lastError = null;
     broadcast();
     return;
   }
@@ -294,7 +297,7 @@ async function stopProxy() {
   if (child === current) child = null;
   if (status !== "error") {
     status = "stopped";
-    lastError = "";
+    lastError = null;
   }
   stopping = false;
   clearPidFor(current.pid);
@@ -314,8 +317,9 @@ function clearPidFor(pid) {
 function state() {
   return {
     settings,
+    messages: MESSAGES[settings.language],
     status,
-    error: lastError,
+    error: lastError ? translate(settings.language, lastError.key, lastError.values) : "",
     proxyUrl: `http://127.0.0.1:${settings.port}`,
     version: app.getVersion(),
     logPath,
@@ -377,7 +381,7 @@ function applyLogin(enabled) {
       const executable = process.env.APPIMAGE ?? process.execPath;
       fs.writeFileSync(
         file,
-        `[Desktop Entry]\nType=Application\nName=${PRODUCT}\nComment=Local privacy gateway for cloud LLMs\nExec="${executable}" --hidden\nX-GNOME-Autostart-enabled=true\n`,
+        `[Desktop Entry]\nType=Application\nName=${PRODUCT}\nComment=${translate(settings.language, "app.tagline")}\nExec="${executable}" --hidden\nX-GNOME-Autostart-enabled=true\n`,
       );
     } else {
       fs.rmSync(file, { force: true });
@@ -394,15 +398,17 @@ function applyLogin(enabled) {
 
 function updateTray() {
   if (!tray) return;
+  const t = (key) => translate(settings.language, key);
   const running = status === "running";
   const busy = status === "starting" || status === "stopping";
+  const shortStatus = t(`tray.${status}`);
   const menu = Menu.buildFromTemplate([
     { label: PRODUCT, enabled: false },
-    { label: `Status: ${status}`, enabled: false },
+    { label: `${t("tray.status")}: ${shortStatus}`, enabled: false },
     { type: "separator" },
-    { label: "Open settings", click: showWindow },
+    { label: t("tray.openSettings"), click: showWindow },
     {
-      label: running ? "Stop proxy" : "Start proxy",
+      label: running ? t("actions.stop") : t("actions.start"),
       enabled: !busy,
       click: () => {
         if (running) void stopProxy();
@@ -411,7 +417,7 @@ function updateTray() {
     },
     { type: "separator" },
     {
-      label: "Start at login",
+      label: t("tray.startAtLogin"),
       type: "checkbox",
       checked: settings.startAtLogin,
       click: (item) => {
@@ -421,18 +427,18 @@ function updateTray() {
         broadcast();
       },
     },
-    { label: "Open log", click: () => shell.openPath(logPath) },
+    { label: t("tray.openLog"), click: () => shell.openPath(logPath) },
     { type: "separator" },
-    { label: "Quit", click: () => app.quit() },
+    { label: t("tray.quit"), click: () => app.quit() },
   ]);
   tray.setContextMenu(menu);
-  tray.setToolTip(`${PRODUCT}: ${status}`);
+  tray.setToolTip(`${PRODUCT}: ${shortStatus}`);
 }
 
 function createTray() {
   const image = nativeImage.createFromPath(TRAY_ICON);
   tray = new Tray(image);
-  tray.setToolTip(`${PRODUCT}: ${status}`);
+  tray.setToolTip(`${PRODUCT}: ${translate(settings.language, `tray.${status}`)}`);
   tray.on("click", showWindow);
   updateTray();
 }
@@ -440,10 +446,17 @@ function createTray() {
 function registerIpc() {
   ipcMain.handle("get-state", () => state());
 
+  ipcMain.handle("set-language", (_event, language) => {
+    settings.language = normalizeLanguage(language);
+    saveSettings();
+    broadcast();
+    return state();
+  });
+
   ipcMain.handle("save-settings", async (_event, incoming) => {
     const port = Number(incoming?.port);
     if (!Number.isInteger(port) || port < 1024 || port > 65535) {
-      throw new Error("Port must be a number between 1024 and 65535.");
+      throw new Error(translate(settings.language, "error.port"));
     }
 
     settings = {

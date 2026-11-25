@@ -2,16 +2,24 @@ const detectorInputs = [...document.querySelectorAll("[data-detector]")];
 const optionInputs = [...document.querySelectorAll("[data-option]")];
 const $ = (selector) => document.querySelector(selector);
 
-const STATUS_TEXT = {
-  running: "Proxy is running",
-  starting: "Starting proxy...",
-  stopping: "Stopping proxy...",
-  stopped: "Proxy is stopped",
-  error: "Proxy error",
-};
-
 let state = null;
 let flashTimer = null;
+
+function language() {
+  return state?.settings?.language ?? "en";
+}
+
+function t(key) {
+  return state?.messages?.[key] ?? key;
+}
+
+function applyTranslations() {
+  document.documentElement.lang = language();
+  for (const element of document.querySelectorAll("[data-i18n]")) {
+    element.textContent = t(element.dataset.i18n);
+  }
+  $("#language").value = language();
+}
 
 function showError(error) {
   const box = $("#error");
@@ -37,6 +45,7 @@ function syncPreload() {
 
 function render(next) {
   state = next;
+  applyTranslations();
 
   for (const input of detectorInputs) {
     input.checked = next.settings.detectors?.[input.dataset.detector] !== false;
@@ -53,11 +62,11 @@ function render(next) {
 
   const status = $("#status");
   status.dataset.status = next.status;
-  $("#status-text").textContent = STATUS_TEXT[next.status] ?? next.status;
+  $("#status-text").textContent = t(`status.${next.status}`);
 
   const running = next.status === "running" || next.status === "starting";
   const toggle = $("#toggle");
-  toggle.textContent = running ? "Stop proxy" : "Start proxy";
+  toggle.textContent = running ? t("actions.stop") : t("actions.start");
   toggle.disabled = next.status === "starting" || next.status === "stopping";
 
   const error = $("#error");
@@ -87,7 +96,7 @@ async function save() {
   try {
     const next = await window.api.saveSettings(collect());
     render(next);
-    flash("Saved and restarted");
+    flash(t("flash.saved"));
   } catch (error) {
     showError(error);
   } finally {
@@ -108,12 +117,21 @@ async function toggleProxy() {
   }
 }
 
+async function changeLanguage() {
+  try {
+    const next = await window.api.setLanguage($("#language").value);
+    render(next);
+  } catch (error) {
+    showError(error);
+  }
+}
+
 async function copyEndpoint() {
   try {
     await navigator.clipboard.writeText(state.proxyUrl);
-    flash("Copied");
+    flash(t("flash.copied"));
   } catch {
-    flash("Copy failed");
+    flash(t("flash.copyFailed"));
   }
 }
 
@@ -125,6 +143,7 @@ function toggleAll() {
 
 $("#save").addEventListener("click", save);
 $("#toggle").addEventListener("click", toggleProxy);
+$("#language").addEventListener("change", changeLanguage);
 $("#copy").addEventListener("click", copyEndpoint);
 $("#log").addEventListener("click", () => window.api.openLog());
 $("#all").addEventListener("click", toggleAll);

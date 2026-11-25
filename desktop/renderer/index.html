@@ -33,23 +33,29 @@
           </div>
           <div>
             <h1>Universal LLM Prompt Anonymizer</h1>
-            <p>Keep personal data out of cloud prompts.</p>
+            <p data-i18n="app.tagline">Keep personal data out of cloud prompts.</p>
           </div>
         </div>
-        <div class="status" id="status" data-status="starting" role="status">
-          <span class="dot" aria-hidden="true"></span>
-          <span id="status-text">Starting...</span>
+        <div class="hero-side">
+          <select id="language" class="language" aria-label="Language / Язык">
+            <option value="en">English</option>
+            <option value="ru">Русский</option>
+          </select>
+          <div class="status" id="status" data-status="starting" role="status">
+            <span class="dot" aria-hidden="true"></span>
+            <span id="status-text">Starting...</span>
+          </div>
         </div>
       </header>
 
       <section class="card endpoint">
         <div>
-          <span class="label">Proxy endpoint</span>
+          <span class="label" data-i18n="endpoint.label">Proxy endpoint</span>
           <code id="proxy-url">http://127.0.0.1:8787</code>
         </div>
         <div class="endpoint-actions">
-          <button class="ghost" id="copy" type="button">Copy</button>
-          <button class="ghost" id="log" type="button">Open log</button>
+          <button class="ghost" id="copy" type="button" data-i18n="endpoint.copy">Copy</button>
+          <button class="ghost" id="log" type="button" data-i18n="endpoint.openLog">Open log</button>
         </div>
       </section>
 
@@ -58,104 +64,157 @@
       <section class="card">
         <div class="section-head">
           <div>
-            <h2>What to hide</h2>
-            <p class="hint">Uncheck anything you want the model to see unchanged.</p>
+            <h2 data-i18n="hide.title">What to hide</h2>
+            <p class="hint" data-i18n="hide.hint">Uncheck anything you want the model to see unchanged.</p>
           </div>
-          <button class="ghost small" id="all" type="button">Toggle all</button>
+          <button class="ghost small" id="all" type="button" data-i18n="hide.toggleAll">Toggle all</button>
         </div>
         <div class="grid">
           <label class="check">
             <input type="checkbox" data-detector="names">
-            <span><strong>Names and surnames</strong><small>Local NER, English and Russian</small></span>
+            <span>
+              <strong data-i18n="detector.names.title">Names and surnames</strong>
+              <small data-i18n="detector.names.hint">Local NER, English and Russian</small>
+            </span>
           </label>
           <label class="check">
             <input type="checkbox" data-detector="nickname">
-            <span><strong>Nicknames</strong><small>Labeled or quoted nicknames</small></span>
+            <span>
+              <strong data-i18n="detector.nickname.title">Nicknames</strong>
+              <small data-i18n="detector.nickname.hint">Labeled or quoted nicknames</small>
+            </span>
           </label>
           <label class="check">
             <input type="checkbox" data-detector="date">
-            <span><strong>Dates of birth</strong><small>Dates next to birth labels</small></span>
+            <span>
+              <strong data-i18n="detector.date.title">Dates of birth</strong>
+              <small data-i18n="detector.date.hint">Dates next to birth labels</small>
+            </span>
           </label>
           <label class="check">
             <input type="checkbox" data-detector="username">
-            <span><strong>Usernames and home paths</strong><small>C:\Users\name, /home/name</small></span>
+            <span>
+              <strong data-i18n="detector.username.title">Usernames and home paths</strong>
+              <small data-i18n="detector.username.hint">C:\Users\name, /home/name</small>
+            </span>
           </label>
           <label class="check">
             <input type="checkbox" data-detector="email">
-            <span><strong>Email addresses</strong><small>Full address</small></span>
+            <span>
+              <strong data-i18n="detector.email.title">Email addresses</strong>
+              <small data-i18n="detector.email.hint">Full address</small>
+            </span>
           </label>
           <label class="check">
             <input type="checkbox" data-detector="phone">
-            <span><strong>Phone numbers</strong><small>International, US and Russian formats</small></span>
+            <span>
+              <strong data-i18n="detector.phone.title">Phone numbers</strong>
+              <small data-i18n="detector.phone.hint">International, US and Russian formats</small>
+            </span>
           </label>
           <label class="check">
             <input type="checkbox" data-detector="address">
-            <span><strong>Street addresses</strong><small>English and Russian patterns</small></span>
+            <span>
+              <strong data-i18n="detector.address.title">Street addresses</strong>
+              <small data-i18n="detector.address.hint">English and Russian patterns</small>
+            </span>
           </label>
           <label class="check">
             <input type="checkbox" data-detector="card">
-            <span><strong>Payment cards</strong><small>Luhn validated</small></span>
+            <span>
+              <strong data-i18n="detector.card.title">Payment cards</strong>
+              <small data-i18n="detector.card.hint">Luhn validated</small>
+            </span>
           </label>
           <label class="check">
             <input type="checkbox" data-detector="iban">
-            <span><strong>IBANs</strong><small>Mod 97 validated</small></span>
+            <span>
+              <strong data-i18n="detector.iban.title">IBANs</strong>
+              <small data-i18n="detector.iban.hint">Mod 97 validated</small>
+            </span>
           </label>
           <label class="check">
             <input type="checkbox" data-detector="ssn">
-            <span><strong>US SSNs</strong><small>123-45-6789 format</small></span>
+            <span>
+              <strong data-i18n="detector.ssn.title">US SSNs</strong>
+              <small data-i18n="detector.ssn.hint">123-45-6789 format</small>
+            </span>
           </label>
           <label class="check">
             <input type="checkbox" data-detector="id">
-            <span><strong>Account and passport IDs</strong><small>Labeled numbers</small></span>
+            <span>
+              <strong data-i18n="detector.id.title">Account and passport IDs</strong>
+              <small data-i18n="detector.id.hint">Labeled numbers</small>
+            </span>
           </label>
           <label class="check">
             <input type="checkbox" data-detector="number">
-            <span><strong>Long numbers</strong><small>9 or more digits</small></span>
+            <span>
+              <strong data-i18n="detector.number.title">Long numbers</strong>
+              <small data-i18n="detector.number.hint">9 or more digits</small>
+            </span>
           </label>
           <label class="check">
             <input type="checkbox" data-detector="ip">
-            <span><strong>IP addresses</strong><small>IPv4</small></span>
+            <span>
+              <strong data-i18n="detector.ip.title">IP addresses</strong>
+              <small data-i18n="detector.ip.hint">IPv4</small>
+            </span>
           </label>
         </div>
       </section>
 
       <section class="card">
-        <h2>Behavior</h2>
-        <p class="hint">Applies to this app and to every client that uses the proxy.</p>
+        <h2 data-i18n="behavior.title">Behavior</h2>
+        <p class="hint" data-i18n="behavior.hint">Applies to this app and to every client that uses the proxy.</p>
         <div class="grid">
           <label class="check">
             <input type="checkbox" data-option="startAtLogin" id="startAtLogin">
-            <span><strong>Start at login</strong><small>Open in the tray when you sign in</small></span>
+            <span>
+              <strong data-i18n="behavior.startAtLogin.title">Start at login</strong>
+              <small data-i18n="behavior.startAtLogin.hint">Open in the tray when you sign in</small>
+            </span>
           </label>
           <label class="check">
             <input type="checkbox" data-option="preload" id="preload">
-            <span><strong>Preload name models</strong><small>Slower start, faster first prompt</small></span>
+            <span>
+              <strong data-i18n="behavior.preload.title">Preload name models</strong>
+              <small data-i18n="behavior.preload.hint">Slower start, faster first prompt</small>
+            </span>
           </label>
           <label class="check">
             <input type="checkbox" data-option="log" id="log">
-            <span><strong>Write request log</strong><small>Method, path, status and token count only</small></span>
+            <span>
+              <strong data-i18n="behavior.log.title">Write request log</strong>
+              <small data-i18n="behavior.log.hint">Method, path, status and token count only</small>
+            </span>
           </label>
           <label class="check danger">
             <input type="checkbox" data-option="allowUnscanned" id="allowUnscanned">
-            <span><strong>Allow unscanned non-JSON bodies</strong><small>Warning: those bodies are not anonymized</small></span>
+            <span>
+              <strong data-i18n="behavior.allowUnscanned.title">Allow unscanned non-JSON bodies</strong>
+              <small data-i18n="behavior.allowUnscanned.hint">Warning: those bodies are not anonymized</small>
+            </span>
           </label>
         </div>
       </section>
 
       <section class="card">
-        <h2>Advanced</h2>
+        <h2 data-i18n="advanced.title">Advanced</h2>
         <label class="field" for="port">
-          <span>Port</span>
+          <span data-i18n="advanced.port">Port</span>
           <input id="port" type="number" min="1024" max="65535" step="1">
         </label>
-        <p class="hint">The proxy listens on 127.0.0.1 only. Restart after changing the port.</p>
+        <p class="hint" data-i18n="advanced.hint">The proxy listens on 127.0.0.1 only. Restart after changing the port.</p>
       </section>
 
       <footer class="actions">
-        <button class="primary" id="save" type="button">Save and restart</button>
+        <button class="primary" id="save" type="button" data-i18n="actions.save">Save and restart</button>
         <button class="secondary" id="toggle" type="button">Stop proxy</button>
         <span class="saved" id="saved" aria-live="polite"></span>
       </footer>
+
+      <p class="disclaimer" data-i18n="disclaimer">Use at your own risk. This tool can fail to detect personal data, and the author is not liable for any data leak.</p>
 
       <footer class="meta">
         <span>v<span id="version">0.1.0</span></span>

@@ -2,6 +2,8 @@
 
 One guide for Windows, macOS and Linux. The product name is Universal LLM Prompt Anonymizer. The command is `prompt-anonymizer`.
 
+**Disclaimer.** This is a best-effort privacy tool. It can fail to detect personal data, and the author is not liable for any data leak or damage. Use it at your own risk.
+
 ## Desktop app
 
 The easiest option is the desktop app. It does not need Node.js, npm or git.
